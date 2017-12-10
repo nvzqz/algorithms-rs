@@ -30,4 +30,39 @@ impl<T> BinaryTree<T> {
     pub fn right(&self) -> Option<&BinaryTree<T>> {
         self.right.as_ref().map(AsRef::as_ref)
     }
+
+    /// Traverses the tree in-order.
+    pub fn in_order<F: FnMut(&T)>(&self, mut f: F) {
+        in_order_imp(self, &mut f);
+    }
+
+    /// Traverses the tree pre-order.
+    pub fn pre_order<F: FnMut(&T)>(&self, mut f: F) {
+        pre_order_imp(self, &mut f);
+    }
+
+    /// Traverses the tree post-order.
+    pub fn post_order<F: FnMut(&T)>(&self, mut f: F) {
+        post_order_imp(self, &mut f);
+    }
+}
+
+// Implementations /////////////////////////////////////////////////////////////
+
+fn in_order_imp<'a, T, F: FnMut(&'a T)>(tree: &'a BinaryTree<T>, f: &mut F) {
+    tree.left.as_ref().map(|val| in_order_imp(val, f));
+    f(&tree.value);
+    tree.right.as_ref().map(|val| in_order_imp(val, f));
+}
+
+fn pre_order_imp<'a, T, F: FnMut(&'a T)>(tree: &'a BinaryTree<T>, f: &mut F) {
+    f(&tree.value);
+    tree.left.as_ref().map(|val| pre_order_imp(val, f));
+    tree.right.as_ref().map(|val| pre_order_imp(val, f));
+}
+
+fn post_order_imp<'a, T, F: FnMut(&'a T)>(tree: &'a BinaryTree<T>, f: &mut F) {
+    tree.left.as_ref().map(|val| post_order_imp(val, f));
+    tree.right.as_ref().map(|val| post_order_imp(val, f));
+    f(&tree.value);
 }
