@@ -1,4 +1,4 @@
-/// A binary search tree.
+/// A binary tree.
 pub struct BinaryTree<T> {
     data: T,
     left: Option<Box<BinaryTree<T>>>,
